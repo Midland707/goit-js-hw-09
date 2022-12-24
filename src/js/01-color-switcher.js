@@ -17,8 +17,9 @@ function getRandomHexColor() {
 }
 
 const styles = document.querySelector('body');
-const stylesInsert = document.createElement('style');
-const galleryStyles = `button {
+const buttonsStyles = `
+<style>
+button {
       height: 100px;
       width: 200px;
       text-transform: uppercase;
@@ -36,9 +37,8 @@ const galleryStyles = `button {
     button[data-stop] {
         left: 50%;
   }
-  `;
-stylesInsert.insertAdjacentHTML('beforeend', galleryStyles);
-styles.prepend(stylesInsert);
+  </style>`;
+styles.insertAdjacentHTML('afterbegin', buttonsStyles);
 
 const bodyStyles = document.querySelector('body');
 const buttonStart = document.querySelector(`[data-start]`);
@@ -50,6 +50,8 @@ buttonStop.disabled = true;
 function startFunction() {
   buttonStart.disabled = true;
   buttonStop.disabled = false;
+  const startColor = getRandomHexColor();
+  bodyStyles.style.backgroundColor = startColor;
   timerId = setInterval(() => {
     const color = getRandomHexColor();
     bodyStyles.style.backgroundColor = color;
