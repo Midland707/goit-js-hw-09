@@ -38,21 +38,46 @@
 
 // all modules
 import Notiflix from 'notiflix';
+const fromForm = document.querySelector('.form');
 
 function createPromise(position, delay) {
-  const shouldResolve = Math.random() > 0.3;
-  if (shouldResolve) {
-    // Fulfill
-  } else {
-    // Reject
-  }
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      const shouldResolve = Math.random() > 0.3;
+      if (shouldResolve) {
+        resolve({ position, delay });
+      } else {
+        reject({ position, delay });
+      }
+    }, delay);
+  });
 }
 
-// e.g. Only message
-Notiflix.Notify.success('Sol lucet omnibus');
+fromForm.addEventListener('submit', onFormSubmit);
+function onFormSubmit(event) {
+  event.preventDefault();
+  const fromFormToInput = document.querySelectorAll('label input');
+  // console.log(event.currentTarget.elements.delay.value);
+  // console.log(fromFormToInput[0].value); //firstDelay
+  // console.log(fromFormToInput[1].value); //step
+  // console.log(fromFormToInput[2].value); //amount
+  const firstDelay = Number(fromFormToInput[0].value);
+  let delay = firstDelay;
+  const step = Number(fromFormToInput[1].value);
+  const amount = Number(fromFormToInput[2].value);
 
-Notiflix.Notify.failure('Qui timide rogat docet negare');
-
-Notiflix.Notify.warning('Memento te hominem esse');
-
-Notiflix.Notify.info('Cogito ergo sum');
+  for (let i = 1; i <= amount + 1; i++) {
+    createPromise(i, delay)
+      .then(({ position, delay }) => {
+        Notiflix.Notify.success(
+          `✅ Fulfilled promise ${position} in ${delay}ms`
+        );
+      })
+      .catch(({ position, delay }) => {
+        Notiflix.Notify.failure(
+          `❌ Rejected promise ${position} in ${delay}ms`
+        );
+      });
+    delay += step;
+  }
+}
